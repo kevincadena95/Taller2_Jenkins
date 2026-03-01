@@ -76,41 +76,45 @@ time.sleep(1)
 drive.get("https://webdriveruniversity.com/To-Do-List/index.html")
 
 WebDriverWait(drive, 10).until(
-    EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='text'], input"))
+    EC.presence_of_element_located((By.XPATH, "//input[@type='text']"))
 )
 #Contar los elementos iniciales para la validacion final
-initial_items = drive.find_elements(By.CSS_SELECTOR, "ul li, li")
-initial_count = len(initial_items)
+initial_tasks = drive.find_elements(By.XPATH, "//ul//li")
+initial_vaidation = len(initial_tasks)
 time.sleep(2) 
 
 #Agregar tarea
-task_input = drive.find_element(By.CSS_SELECTOR, "input[type='text'], input")
+task_input = drive.find_element(By.XPATH, "//input[@type='text']")
 task_input.clear()
 task_input.send_keys("Hacer Taller 2")
 task_input.send_keys(Keys.ENTER)
 
-# esperar hasta que aparezca un nuevo item en la lista
-WebDriverWait(drive, 5).until(
-    lambda d: len(d.find_elements(By.CSS_SELECTOR, "ul li, li")) > initial_count
-)
-time.sleep(2) 
+
+#esperar hasta que aparezca un nuevo item en la lista 
+WebDriverWait(drive, 5).until( 
+    lambda d: len(d.find_elements(By.XPATH, "//ul//li")) > initial_vaidation )
+time.sleep(1) 
 
 # Marcar la tarea como completada
-new_item = drive.find_element(By.XPATH, "//li[normalize-space() = 'Hacer Taller 2']")
-new_item.click()
+new_task = drive.find_element(By.XPATH, "//li[normalize-space() = 'Hacer Taller 2']")
+new_task.click()
 time.sleep(2)  
 
 # Eliminar la tarea
-drive.execute_script("arguments[0].remove();", new_item)
+drive.execute_script("arguments[0].remove();", new_task)
 time.sleep(2)
 
-#Validar estado final
-final_items = drive.find_elements(By.CSS_SELECTOR, "ul li, li")
-final_count = len(final_items)
+#Validar estado final: es exitosa si los valores finales coinciden con los valore inicales antes de agregar y elimar la nueva tarea
+final_tasks = drive.find_elements(By.XPATH, "//ul//li")
+final_vaidation = len(final_tasks)
 
-if final_count != initial_count:
-    raise Exception(f"Validación fallida: items iniciales {initial_count}, items finales {final_count}")
+if final_vaidation == initial_vaidation:
+    drive.execute_script("alert('Validación exitosa');")
+else:
+    drive.execute_script(f"alert('Validación fallida: {initial_vaidation} != {final_vaidation}');")
 
+WebDriverWait(drive, 10).until(EC.alert_is_present())
+time.sleep(3)
+drive.switch_to.alert.accept()
 
-time.sleep(1)
 drive.quit()
