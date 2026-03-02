@@ -115,7 +115,7 @@ else:
 
 WebDriverWait(drive, 10).until(EC.alert_is_present())
 time.sleep(2)
-drive.switch_to.alert.accept() 
+drive.switch_to.alert.accept()  
 
 #Parte 4-Iframes
 #Ir al módulo IFrame
@@ -124,28 +124,31 @@ drive.get("https://webdriveruniversity.com/IFrame/index.html")
 #Cambiar al iframe
 WebDriverWait(drive, 10).until(
     EC.frame_to_be_available_and_switch_to_it((By.ID, "frame")))
-time.sleep(1)
+
 
 #Hacer clic en un elemento dentro (Our products)
 our_products_btn = WebDriverWait(drive, 10).until(
     EC.element_to_be_clickable((By.XPATH, "//a[text()='Our Products']")))
+time.sleep(1)
 our_products_btn.click()
 time.sleep(1)
 
 #Hacer clic en un elemento dentro del Our products
 new_laptops_btn = WebDriverWait(drive, 10).until(
     EC.element_to_be_clickable((By.XPATH, "//p[text()='New Laptops']")))
+time.sleep(1)
 new_laptops_btn.click()
 time.sleep(1)
 
 close_modal_btn = WebDriverWait(drive, 5).until(
     EC.element_to_be_clickable((By.XPATH, "//button[contains(normalize-space(.), 'Close')]")))
+time.sleep(1)
 close_modal_btn.click()
 time.sleep(1)
 
 # Volver al DOM principal
-drive.switch_to.default_content()
-time.sleep(2) 
+drive.get("https://webdriveruniversity.com/")
+time.sleep(1) 
 
 # Ir a Popup & Alerts
 drive.get("https://webdriveruniversity.com/Popup-Alerts/index.html")
@@ -160,9 +163,21 @@ time.sleep(1)
 
 WebDriverWait(drive, 10).until(EC.alert_is_present())
 alert = drive.switch_to.alert
+alert_text = alert.text.strip()
+expected_alert_text = "I am an alert box!"
 time.sleep(1) 
 alert.accept()
+
+if alert_text == expected_alert_text:
+    drive.execute_script("alert('Validación de texto exitosa');")
+else:
+    drive.execute_script("alert('Validación fallida');")
+
 time.sleep(1) 
+WebDriverWait(drive, 10).until(EC.alert_is_present())
+drive.switch_to.alert.accept()
+time.sleep(1) 
+
 
 # Confirm
 confirm_btn = WebDriverWait(drive, 10).until(
@@ -173,14 +188,20 @@ time.sleep(1)
 
 WebDriverWait(drive, 10).until(EC.alert_is_present())
 confirm_alert = drive.switch_to.alert
+confirm_text = confirm_alert.text.strip()
+expected_confirm_text = "Press a button!"
 time.sleep(1) 
-confirm_alert.accept()
-time.sleep(1) 
+confirm_alert.accept()  
 
-confirm_result = WebDriverWait(drive, 10).until(
-    EC.visibility_of_element_located((By.ID, "confirm-alert-text")))
-time.sleep(1) 
+if confirm_text == expected_confirm_text:
+    drive.execute_script("alert('Validación de texto exitosa');")
+else:
+    drive.execute_script("alert('Validación fallida');")
 
+time.sleep(1) 
+WebDriverWait(drive, 10).until(EC.alert_is_present())
+drive.switch_to.alert.accept()
+time.sleep(1) 
 
 # Prompt
 prompt_btn = WebDriverWait(drive, 10).until(
@@ -188,6 +209,20 @@ prompt_btn = WebDriverWait(drive, 10).until(
 time.sleep(1) 
 prompt_btn.click()
 time.sleep(1) 
+
+modal = WebDriverWait(drive, 10).until(
+    EC.visibility_of_element_located((By.CLASS_NAME, "modal-content")))
+modal_text = modal.text
+
+#Validar Textos
+if "We can inject" in modal_text:
+    drive.execute_script("alert('Validación exitosa');")
+else:
+    drive.execute_script("alert('Validación fallida');")
+
+WebDriverWait(drive, 10).until(EC.alert_is_present())
+time.sleep(1) 
+drive.switch_to.alert.accept()
 
 close_btn = WebDriverWait(drive, 10).until(
     EC.element_to_be_clickable((By.XPATH, "//button[text()='Close']")))
