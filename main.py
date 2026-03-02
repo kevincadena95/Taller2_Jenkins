@@ -3,7 +3,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys   
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select   
 import time
 
 service = Service("msedgedriver.exe")
@@ -115,7 +116,26 @@ else:
 
 WebDriverWait(drive, 10).until(EC.alert_is_present())
 time.sleep(2)
-drive.switch_to.alert.accept()  
+drive.switch_to.alert.accept()
+
+#Parte 3-Dropdown
+drive.get("https://webdriveruniversity.com/Dropdown-Checkboxes-RadioButtons/index.html")
+
+WebDriverWait(drive, 10).until(
+    EC.presence_of_element_located((By.ID, "dropdowm-menu-1"))
+)
+
+dropdown_1 = Select(drive.find_element(By.ID, "dropdowm-menu-1"))
+dropdown_1.select_by_visible_text("Python")
+time.sleep(1)
+
+dropdown_2 = Select(drive.find_element(By.ID, "dropdowm-menu-2"))
+dropdown_2.select_by_value("maven")
+time.sleep(1)
+
+dropdown_3 = Select(drive.find_element(By.ID, "dropdowm-menu-3"))
+dropdown_3.select_by_index(2)
+time.sleep(1)
 
 #Parte 4-Iframes
 #Ir al módulo IFrame
